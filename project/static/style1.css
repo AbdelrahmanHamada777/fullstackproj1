@@ -18,22 +18,89 @@ body {
     object-fit: cover;
  border-radius: 50%;
 }
-
-.headerContainer {
-    background-color: #0171F9;
+.chatbot:hover {
+    transform: scale(1.1);
+    transition: .3s;
 }
+/* Sidebar */
+.chatbot-sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background: #1e1e1e;
+  color: #fff;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.4);
+  transition: right 0.3s ease;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbot-sidebar.active {
+  right: 0;
+}
+
+/* Header */
+.chatbot-header {
+  padding: 15px;
+  background: #ff4d00;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#closeChatbot {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Body */
+.chatbot-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+/* Footer */
+.chatbot-footer {
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.chatbot-footer input {
+  flex: 1;
+  padding: 8px;
+}
+
+.chatbot-footer button {
+  padding: 8px 12px;
+  background: #ff4d00;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+.headerContainer {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; 
+}
+
 .header {
-    height: 80px;
-    background-color: #0171F9;
+    height: 100px;
+    background-color: #1656a4;
     color: #fff;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
-    padding: 30px 100px 0 100px;
+    padding: 0 20px;
     width: 100%;
-    margin: auto;
-    position:fixed;
 }
+
 
 .headerLinks {
     width: 50%;
@@ -44,18 +111,16 @@ body {
     justify-content: space-between;
     align-items: center;
     list-style: none;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+#image_logo{
+    padding-top: 15px;
 }
 
 .headerLinks a {
     text-decoration: none;
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 50px;
-    transition: .3s;
-}
-
-.headerLinks .btn {
-    background-color: #EE626B;
     color: #fff;
     padding: 10px 15px;
     border-radius: 50px;
@@ -69,15 +134,34 @@ body {
 .logo img {
     width: 150px;
 }
+.sign_in{
+  align-self: center;
+
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    width: 100px;
+    height: 52px;
+    font-weight: 600;
+    text-transform: uppercase;
+    align-self: center;
+}
+
+.sign_in:hover{
+    background-color: #9E4147;
+    cursor: pointer;
+}
+
 
 .landingPageContainer {
     background-color: #0171F9;
     border-radius: 0 0 100px 100px;
+    background-image: url(images/showroom1.jpg);
+    background-size: cover;
 }
 .landingPage {
     display: flex;
-    background-color: #0171F9;
-    color: #fff;
+    color: #ffffff;
     padding: 100px 0;
     max-width: 1300px;
     margin: auto;
@@ -85,17 +169,20 @@ body {
 
 .landingPage .slogan {
     text-transform: uppercase;
+    color: #ffffff;
     font-weight: 700;
     font-size: 50px;
 }
 
 .landingPage .welcome {
+    color: #ffffff;
     font-size: x-large;
     height: 10px;
+    
 }
 
 .landingPage .description {
-    color: #000;
+    color: rgb(255, 255, 255);
     width: 80%;
     font-weight: 500;
     
@@ -127,7 +214,7 @@ body {
     font-weight:600;
     font-size: medium;
     padding: 0 20px;
-    background-color: #EE626B;
+    align-items: center;
     color: #fff;
     text-transform: uppercase;
     transition: .3s;
@@ -219,7 +306,7 @@ body {
 }
 
 .trendingCard .cardName p {
-    color: gray;
+    color: rgb(255, 255, 255);
     margin-bottom: 0;
 }
 
@@ -249,15 +336,21 @@ body {
     flex-direction: column;
     align-items: center;
 }
-
+/* .mostCards .card .cardImg{
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 12px;
+} */
 .mostCards .cardInfo .genre {
     margin-bottom: 0;
-    color: gray;
+    font-size: large;
+    color: rgb(75, 74, 74);
 }
 
 .mostContainer {
-    background-color: #EEEEEE;
-    margin-top: 200px;
+    background-color: #476daa;
+    margin-top: 100px;
     padding: 50px;
     border-radius: 100px;
 }
@@ -285,13 +378,13 @@ body {
 }
 
 .category .card .genre {
-    background-color: #0171F9;
+    background-color: #1656a4;
     text-align: center;
     color: #fff;
-    padding: 15px 0 30px 0;
+    padding: 15px;
     font-size: large;
     font-weight: 500;
-    border-radius: 20px 20px 0 0;
+    border-radius: 20px;
 }
 
 .category .categoryCards {
@@ -303,12 +396,13 @@ body {
 
 .category .card:hover {
     transform: scale(1.05);
+    cursor: pointer;
 }
 
 
 
 .footerContainer {
-    background-color: #0171F9;
+    background-color: #1656a4;
     height: 150px;
     border-radius: 100px 100px 0 0;
     margin-top: 100px;
@@ -362,4 +456,97 @@ body {
     border-radius: 20px;
     padding-top: 10px;
     resize: none;
+}
+
+.category .card {
+    width: 230px;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 20px;
+    text-align: center;
+    transition: .3s;
+}
+
+.category .card:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+
+.cardImg img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+}
+
+.category .card .genre {
+    background-color: #1656a4;
+    text-align: center;
+    color: #fff;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 15px;
+    margin-top: 15px;
+}
+.userBox {
+    display: flex;
+    flex-direction: column;  
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+#welcome {
+    margin: 0;
+}
+
+#logout {
+    font-size: 14px;
+    color: red;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#logout:hover {
+    text-decoration: underline;
+    background: none;
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 100px;
+}
+#container h2 {
+    margin-bottom: 20px;
+}
+#container input {
+    margin: 10px 0;
+    padding: 12px;
+    width: 300px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+form
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+form button {
+    margin-top: 20px;
+    width: 150px;
+    background-color: #ff4d00;
+}
+
+form button:hover {
+    background-color: #e04300;
+    cursor: pointer;
 }
