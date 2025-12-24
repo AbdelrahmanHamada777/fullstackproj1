@@ -54,6 +54,14 @@ body {
     transition: .3s;
 }
 
+.headerLinks .btn {
+    background-color: #EE626B;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 50px;
+    transition: .3s;
+}
+
 .headerLinks a:hover {
     background-color: #0171F9;
 }
