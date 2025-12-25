@@ -18,22 +18,44 @@ body {
 /* Header and Footer styles are now inherited from style1.css via base.html */
 
 /* Button Styles (Specific to Contact Form if needed, otherwise rely on style1) */
-.btn {
-    background-color: #ee626b;
+.searchContainer button {
+    background-color: #1656a4;
     color: white;
     border: none;
-    padding: 10px 25px;
-    border-radius: 25px;
+    padding: 12px 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-size: 15px;
+}
+
+.searchContainer button:hover {
+    background-color: #0171F9;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(22, 86, 164, 0.4);
+}
+
+.btn {
+    background-color: #1656a4;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+    display: inline-block;
+    text-decoration: none;
 }
 
 .btn:hover {
-    background-color: #d0535b;
+    background-color: #0171F9;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(22, 86, 164, 0.4);
 }
 
 /* Form Styles */

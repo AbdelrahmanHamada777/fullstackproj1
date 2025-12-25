@@ -15,7 +15,7 @@
 </div>
 
 <!-- Search -->
-<div class="searchContainer">
+<div class="searchBar" style="margin: 40px auto;">
     <form method="GET" action="{% url 'shop' %}">
         <input type="text" name="q" placeholder="Search products..." value="{{ query|default:'' }}">
         <button type="submit">Search</button>

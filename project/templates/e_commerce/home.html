@@ -3,6 +3,47 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'monitors.css' %}" />
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const slider = document.querySelector('.mostCards');
+    const cards = document.querySelectorAll('.sliderCard');
+    const prevBtn = document.querySelector('.prevBtn');
+    const nextBtn = document.querySelector('.nextBtn');
+
+    let currentIndex = 0;
+    const cardsToShow = window.innerWidth > 1200 ? 4 : (window.innerWidth > 992 ? 3 : (window.innerWidth > 768 ? 2 : 1));
+    const maxIndex = cards.length - cardsToShow;
+
+    function updateSlider() {
+      const cardWidth = cards[0].offsetWidth + 30; // Card width + gap
+      const offset = currentIndex * cardWidth;
+      slider.style.transform = `translateX(-${offset}px)`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+      } else {
+        currentIndex = 0; // Loop back
+      }
+      updateSlider();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = maxIndex; // Loop to end
+      }
+      updateSlider();
+    });
+
+    // Update on resize
+    window.addEventListener('resize', () => {
+      updateSlider();
+    });
+  });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -42,26 +83,33 @@
       <!-- <button class="btn">view all</button> -->
     </div>
 
-    <div class="mostCards">
-      {% for product in hot_sales %}
-      <div class="card">
-        <div class="cardInfo">
-          <img src="{{ product.image.url }}" class="productImg" alt="{{ product.name }}" />
-          <p class="productName">{{ product.name }}</p>
-          <h3 class="productPrice">${{ product.price }}</h3>
-          {% if product.stock > 0 %}
-          <form method="post" action="{% url 'add_to_cart' product.id %}" style="margin-top: 10px;">
-            {% csrf_token %}
-            <button type="submit" class="btn" style="width: 100%; padding: 8px;">Add to Cart</button>
-          </form>
-          {% else %}
-          <p style="color: red; font-weight: bold; margin-top: 10px;">Out of Stock</p>
-          {% endif %}
+    <div class="sliderContainer">
+      <button class="sliderBtn prevBtn">❮</button>
+      <div class="mostCardsWrapper">
+        <div class="mostCards">
+          {% for product in hot_sales %}
+          <div class="card sliderCard">
+            <div class="cardInfo">
+              <img src="{{ product.image.url }}" class="productImg" alt="{{ product.name }}" />
+              <p class="productName">{{ product.name }}</p>
+              <div class="priceContainer">
+                <span class="oldPrice">${{ product.old_price|floatformat:2 }}</span>
+                <h3 class="productPrice">${{ product.price }}</h3>
+              </div>
+              {% if product.stock > 0 %}
+              <form method="post" action="{% url 'add_to_cart' product.id %}" style="margin-top: 10px;">
+                {% csrf_token %}
+                <button type="submit" class="btn" style="width: 100%; padding: 8px;">Add to Cart</button>
+              </form>
+              {% else %}
+              <p style="color: red; font-weight: bold; margin-top: 10px;">Out of Stock</p>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </div>
-      {% empty %}
-      <p style="color: white;">No products available</p>
-      {% endfor %}
+      <button class="sliderBtn nextBtn">❯</button>
     </div>
   </div>
 </div>

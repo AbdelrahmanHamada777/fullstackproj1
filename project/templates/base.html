@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'style1.css' %}?v=3" />
+    <link rel="stylesheet" href="{% static 'style1.css' %}?v=9" />
     <title>{% block title %}PC Planet{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
     {% block extra_head %}{% endblock %}
@@ -42,18 +42,20 @@
         </div>
     </div>
 
-    {% if messages %}
-    <div class="messages-container">
-        {% for message in messages %}
-        <div
-            class="message {% if message.tags == 'success' %}message-success{% elif message.tags == 'error' %}message-error{% else %}message-info{% endif %}">
-            {{ message }}
+    <main class="mainContent">
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div
+                class="message {% if message.tags == 'success' %}message-success{% elif message.tags == 'error' %}message-error{% else %}message-info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% block content %}
-    {% endblock %}
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </main>
 
     <div class="footerContainer">
         <div class="footer">
@@ -74,7 +76,7 @@
         </div>
 
         <div class="chatbot-body" id="chatMessages">
-            <p>Hello 👋 How can I help you today?</p>
+            <p class="bot-msg">Hello 👋 How can I help you today?</p>
         </div>
 
         <div class="chatbot-footer">
@@ -84,7 +86,6 @@
     </div>
 
     <script src="{% static 'index.js' %}?v=2"></script>
-    <script src="{% static 'main.js' %}?v=2"></script>
     <script>
         // Get CSRF token from cookie
         function getCookie(name) {
@@ -107,10 +108,12 @@
         const chatInput = document.getElementById('chatInput');
         const chatMessages = document.getElementById('chatMessages');
 
-        sendBtn.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
-        });
+        if (sendBtn && chatInput && chatMessages) {
+            sendBtn.addEventListener('click', sendChatMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+        }
 
         function sendChatMessage() {
             const message = chatInput.value.trim();
@@ -118,14 +121,11 @@
 
             // Display user message
             const userMsg = document.createElement('p');
-            userMsg.style.textAlign = 'right';
-            userMsg.style.background = '#0171F9';
-            userMsg.style.padding = '8px';
-            userMsg.style.borderRadius = '8px';
-            userMsg.style.marginBottom = '10px';
+            userMsg.className = 'user-msg';
             userMsg.textContent = message;
             chatMessages.appendChild(userMsg);
             chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
             // Send to backend
             const csrftoken = getCookie('csrftoken');
@@ -138,7 +138,6 @@
                 body: `message=${encodeURIComponent(message)}`
             })
                 .then(res => {
-                    console.log('Response status:', res.status);
                     if (!res.ok) {
                         throw new Error('Not authenticated or server error');
                     }
@@ -146,10 +145,7 @@
                 })
                 .then(data => {
                     const botMsg = document.createElement('p');
-                    botMsg.style.background = '#333';
-                    botMsg.style.padding = '8px';
-                    botMsg.style.borderRadius = '8px';
-                    botMsg.style.marginBottom = '10px';
+                    botMsg.className = 'bot-msg';
                     botMsg.textContent = data.response;
                     chatMessages.appendChild(botMsg);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -163,7 +159,6 @@
                 });
         }
     </script>
-    <script src="{% static 'sign_in.js' %}"></script>
     {% block scripts %}{% endblock %}
 
 </body>

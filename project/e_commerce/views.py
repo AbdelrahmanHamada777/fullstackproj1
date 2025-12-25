@@ -12,14 +12,12 @@ from .forms import SignUpForm
 
 # Home page
 def home_view(request):
-    # Get the cheapest product from each category for "Hot Sales"
-    categories = ['Monitors', 'Graphics_Cards', 'Processors', 'Cases']
-    hot_sales = []
+    # Get the top 7 cheapest products across all categories for the carousel
+    hot_sales = Product.objects.all().order_by('price')[:7]
     
-    for category in categories:
-        cheapest = Product.objects.filter(category=category).order_by('price').first()
-        if cheapest:
-            hot_sales.append(cheapest)
+    for product in hot_sales:
+        # Calculate a fake old price (+30%) for frontend display only
+        product.old_price = float(product.price) * 1.3
     
     return render(request, 'e_commerce/home.html', {'hot_sales': hot_sales})
 
