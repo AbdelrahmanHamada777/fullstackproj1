@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Orders - PC Planet{% endblock %}
+
+{% block content %}
+<div id="container" style="margin-top:120px; width: 90%; max-width: 1200px; margin-left: auto; margin-right: auto;">
+    <h2>My Order History</h2>
+
+    {% if orders %}
+    {% for order in orders %}
+    <div
+        style="background: #fff; padding: 20px; margin-bottom: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <div
+            style="display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+            <div>
+                <h3 style="margin: 0; color: #1656a4;">Order #{{ order.id }}</h3>
+                <p style="margin: 5px 0; color: #777;">{{ order.created_at|date:"F d, Y H:i" }}</p>
+            </div>
+            <div style="text-align: right;">
+                <h3 style="margin: 0;">Total: ${{ order.total_price }}</h3>
+                <p style="margin: 5px 0; font-size: 0.9em;">Status: <span
+                        style="color: green; font-weight: bold;">Completed</span></p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <strong>Shipping To:</strong><br>
+            {{ order.address }}<br>
+            Phone: {{ order.phone }} | Zip: {{ order.zip_code }}
+        </div>
+
+        <table width="100%" cellpadding="10"
+            style="border-collapse: collapse; background: #f9f9f9; border-radius: 5px;">
+            <tr style="background: #eee; text-align: left;">
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for item in order.items.all %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>${{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price|floatformat:2 }}</td> <!-- Note: Using simplified subtotal display -->
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div style="text-align: center; padding: 50px;">
+        <h3>You haven't placed any orders yet.</h3>
+        <a href="/shop/" class="btn" style="margin-top: 20px; display: inline-block;">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

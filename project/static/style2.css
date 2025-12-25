@@ -1,10 +1,10 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 * {
     box-sizing: border-box;
 }
 
+/* Body */
 body {
     padding: 0;
     margin: 0;
@@ -15,55 +15,9 @@ body {
     min-height: 100vh;
 }
 
+/* Header and Footer styles are now inherited from style1.css via base.html */
 
-.headerContainer {
-    background-color: #1656a4;
-}
-.header {
-    height: 84px;
-    background-color: #1656a4;
-    color: #fff;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 5px;
-    width: 100%;
-    margin: auto;
-    position:fixed;
-    padding-bottom: 20px;
-}
-
-.headerLinks {
-    width: 50%;
-}
-
-.headerLinks{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    list-style: none;
-    margin-top: 10px;
-    margin-right: 10px;
-}
-
-#image_logo{
-    padding-top: 15px;
-}
-
-.headerLinks a {
-    text-decoration: none;
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 50px;
-    transition: .3s;
-}
-
-.headerLinks a:hover {
-    background-color: #0171F9;
-}
-.logo img {
-    width: 150px;
-}
+/* Button Styles (Specific to Contact Form if needed, otherwise rely on style1) */
 .btn {
     background-color: #ee626b;
     color: white;
@@ -81,29 +35,16 @@ body {
 .btn:hover {
     background-color: #d0535b;
 }
-.sign_in{
-    background-color: #ffffff;
-    align-self:center;
-    color: #fff;
-    border: none;
-    border-radius: 25px;
-    width: 100px;
-    height: 52px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
 
-.sign_in:hover{
-    background-color: #9E4147;
-    cursor: pointer;
-}
-
+/* Form Styles */
 .formContainer {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 50px 20px; 
+    padding: 50px 20px;
+    margin-top: 150px;
+    /* Moved down as requested */
 }
 
 form {
@@ -112,13 +53,14 @@ form {
     width: 100%;
     max-width: 500px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-input, textarea {
+input,
+textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -128,7 +70,8 @@ input, textarea {
     font-family: 'Poppins', sans-serif;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
     border-color: #007bff;
 }
 
@@ -137,63 +80,49 @@ form .btn {
 }
 
 
-.footerContainer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px 0;
-    margin-top: auto;
-}
-
-.footer {
-    font-size: 14px;
-    padding: 0 10px; 
-}
-
-
 
 
 
 @media (max-width: 768px) {
-    
-  
+
+
     .header {
-        height: auto; 
-        flex-direction: column; 
-        position: relative; 
+        height: auto;
+        flex-direction: column;
+        position: relative;
         padding: 20px 10px;
     }
 
-    
+
     .headerLinks {
-        width: 100%; 
-        flex-direction: column; 
+        width: 100%;
+        flex-direction: column;
         margin-top: 20px;
-        gap: 15px; 
+        gap: 15px;
         margin-right: 0;
     }
 
-    
+
     .headerLinks a {
         display: block;
         width: 100%;
         text-align: center;
         padding: 10px;
-        background-color: rgba(255, 255, 255, 0.1); 
+        background-color: rgba(255, 255, 255, 0.1);
     }
 
-  
+
     .sign_in {
-        width: 100%; 
+        width: 100%;
         margin-top: 10px;
     }
 
     .formContainer {
-        padding: 30px 15px; 
+        padding: 30px 15px;
     }
 
     form {
-        padding: 25px; 
+        padding: 25px;
         width: 100%;
     }
 

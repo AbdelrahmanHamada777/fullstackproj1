@@ -1,222 +1,135 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'style1.css' %}" />
-  <link rel="stylesheet" href="{% static 'monitors.css' %}" />
-  <title>PC Planet</title>
-  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
-</head>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'monitors.css' %}" />
+{% endblock %}
 
-<body>
-
-  <div class="headerContainer">
-    <div class="header">
-      <a href="{% url 'home' %}" class="logo">
-        <img src="{% static 'images/logo.png' %}" alt="logo" id="image_logo" />
-      </a>
-      <div class="headerLinks">
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'shop' %}">Our Shop</a>
-        
-        <a href="{% url 'contact' %}">Contact Us</a>
-        <a href="{% url 'cart' %}" style="font-weight: bold;">Cart (<span id="cart-count">{{ cart_count }}</span>)</a>
-       {% if user.is_authenticated %}
-                <div class="userBox">
-                <p id="welcome">Hi, {{ user.username }}</p>
-                <a href="{% url 'logout' %}">Logout</a>
-                </div>
-                {% else %}
-                <a href="{% url 'signin' %}" class="sign_in">Sign in</a>
-                {% endif %}
-
-      </div>
-    </div>
-  </div>
-
-
-  <div class="landingPageContainer">
-    <div class="landingPage">
-      <div class="leftSide">
-        <p class="welcome">Welcome to PC Planet</p>
-        <h1 class="slogan">Your Ultimate Destination for PC Hardware</h1>
-        <p class="description">
-          PC Planet is a fully integrated marketplace built for PC enthusiasts, gamers, and professionals.
-          We provide the latest components, expert guidance, and an AI-powered chatbot that recommends the perfect parts
-          for your system.
-          Whether you're building a gaming rig, upgrading your workstation, or shopping for reliable components, PC
-          Planet ensures a fast, modern, and seamless experience. Here, performance and innovation meet to create your
-          perfect PC world.
-        </p>
-        <div class="searchBar">
-         <form method="GET" action="{% url 'shop' %}">
-            <input type="text" name="q" placeholder="Search products..." value="{{ query|default:'' }}">
-            <button type="submit">Search</button>
+{% block content %}
+<div class="landingPageContainer">
+  <div class="landingPage">
+    <div class="leftSide">
+      <p class="welcome">Welcome to PC Planet</p>
+      <h1 class="slogan">Your Ultimate Destination for PC Hardware</h1>
+      <p class="description">
+        PC Planet is a fully integrated marketplace built for PC enthusiasts, gamers, and professionals.
+        We provide the latest components, expert guidance, and an AI-powered chatbot that recommends the perfect parts
+        for your system.
+        Whether you're building a gaming rig, upgrading your workstation, or shopping for reliable components, PC
+        Planet ensures a fast, modern, and seamless experience. Here, performance and innovation meet to create your
+        perfect PC world.
+      </p>
+      <div class="searchBar">
+        <form method="GET" action="{% url 'shop' %}">
+          <input type="text" name="q" placeholder="Search products..." value="{{ query|default:'' }}">
+          <button type="submit">Search</button>
         </form>
-        </div>
-      </div>
-
-      <div class="imageContainer">
-        <img src="" alt="" />
       </div>
     </div>
-  </div>
 
-
-  <div class="mostContainer">
-    <div class="mostPlayed">
-      <span>Hot sales 🔥</span>
-      <div class="mostHeader">
-        <h1>Best Selling 💰</h1>
-        <!-- <button class="btn">view all</button> -->
-      </div>
-
-      <div class="mostCards">
-        <div class="card">
-          <div class="cardInfo">
-            <img src="{% static 'images/g5.jpg' %}" class="productImg" />
-            <p class="productName">Samsung Odyssey G5 32</p>
-            <h3 class="productPrice">$270</h3>
-            
-          </div>
-        </div>
-        <div class="card">
-          <div class="cardInfo">
-            <img src="{% static 'images/Graphic Cards/1.webp' %}" class="productImg"/>
-            <p class="productName">NVIDIA GeForce RTX 4090</p>
-            <h3 class="productPrice">$1,599</h3>
-            
-          </div>
-        </div>
-        <div class="card">
-          <div class="cardInfo">
-            <img src="{% static 'images/Processors/1.webp' %}" class="productImg"/>
-            <p class="productName">Intel Core i9-14900k</p>
-            <h3 class="productPrice">$589</h3>
-           
-          </div>
-        </div>
-        <div class="card">
-          <div class="cardInfo">
-            <img src="{% static 'images/Cases/5.jpg' %}" class="productImg"/>
-            <p class="productName">Fractal Design Meshify 2</p>
-            <h3 class="productPrice">$149</h3>
-           
-          </div>
-        </div>
-
-        
-      </div>
+    <div class="imageContainer">
+      <img src="" alt="" />
     </div>
-  </div>
-
-  <div class="categoryContainer">
-    <div class="category">
-
-      <div class="categoryHeader">
-        <span>Computer Parts</span>
-        <h1>Shop by Category</h1>
-      </div>
-
-      <div class="categoryCards">
-
-        <div class="card">
-          <a href="{% url 'product_list' category='Monitors' %}" class="card-link">
-            <div class="cardImg">
-              <img src="{% static 'images/dell-3223q-1-1.webp' %}" alt="">
-            </div>
-          </a>
-          <p>Monitors</p>
-        </div>
-
-
-        <div class="card">
-          <a href="{% url 'product_list' category='Graphics_Cards' %}" class="card-link">
-            <div class="cardImg">
-              <img src="{% static 'images/geforce-rtx-40-series-new.jpeg' %}" alt="">
-            </div>
-          </a>
-          <p>Graphic Cards</p>
-
-        </div>
-
-
-        <div class="card">
-          <a href="{% url 'product_list' category='Processors' %}" class="card-link">
-            <div class="cardImg">
-              <img src="{% static 'images/Intel-Rocker-Lake-2-e1615908186584.jpg' %}" alt="">
-            </div>
-          </a>
-          <p>Processors</p>
-
-        </div>
-
-
-        <div class="card">
-          <a href="{% url 'product_list' category='Cases' %}" class="card-link">
-            <div class="cardImg">
-              <img src="{% static 'images/4.webp' %}" alt="">
-            </div>
-          </a>
-          <p>Cases</p>
-        </div>
-
-        <div class="card">
-          <a href="{% url 'product_list' category='Motherboards' %}" class="card-link">
-            <div class="cardImg">
-              <img src="{% static 'images/mb.jpg' %}" alt="">
-            </div>
-          </a>
-          <p>Motherboards</p>
-        </div>
-
-
-      </div>
-
-
-    </div>
-  </div>
-
-
-  <div class="footerContainer">
-    <div class="footer">
-      copyright &copy; 2048 LUGX Gaming Company. All rights reserved. Design:
-      TemplateMo
-    </div>
-  </div>
-
-  <div class="chatbot">
-    <img src="{% static 'images/chatboti.jpg' %}" alt="chatbot" />
-  </div>
-  
-  <!-- Chatbot Sidebar -->
-  <div id="chatbotSidebar" class="chatbot-sidebar">
-  <div class="chatbot-header">
-    <h3>PC Planet Assistant 🤖</h3>
-    <span id="closeChatbot">&times;</span>
-  </div>
-
-  <div class="chatbot-body">
-    <p>Hello 👋 How can I help you today?</p>
-  </div>
-
-  <div class="chatbot-footer">
-    <input type="text" placeholder="Type your message..." />
-    <button>Send</button>
   </div>
 </div>
 
 
-  <script src="index.js"></script>
-  <script src="main.js"></script>
-  <script src="sign_in.js"></script>
-  <script src="contactUs.js"></script>
-</body>
+<div class="mostContainer">
+  <div class="mostPlayed">
+    <span>Hot sales 🔥</span>
+    <div class="mostHeader">
+      <h1>Best Selling 💰</h1>
+      <!-- <button class="btn">view all</button> -->
+    </div>
 
-</html>
+    <div class="mostCards">
+      {% for product in hot_sales %}
+      <div class="card">
+        <div class="cardInfo">
+          <img src="{{ product.image.url }}" class="productImg" alt="{{ product.name }}" />
+          <p class="productName">{{ product.name }}</p>
+          <h3 class="productPrice">${{ product.price }}</h3>
+          {% if product.stock > 0 %}
+          <form method="post" action="{% url 'add_to_cart' product.id %}" style="margin-top: 10px;">
+            {% csrf_token %}
+            <button type="submit" class="btn" style="width: 100%; padding: 8px;">Add to Cart</button>
+          </form>
+          {% else %}
+          <p style="color: red; font-weight: bold; margin-top: 10px;">Out of Stock</p>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <p style="color: white;">No products available</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="categoryContainer">
+  <div class="category">
+
+    <div class="categoryHeader">
+      <span>Computer Parts</span>
+      <h1>Shop by Category</h1>
+    </div>
+
+    <div class="categoryCards">
+
+      <div class="card">
+        <a href="{% url 'product_list' category='Monitors' %}" class="card-link">
+          <div class="cardImg">
+            <img src="{% static 'images/dell-3223q-1-1.webp' %}" alt="">
+          </div>
+        </a>
+        <p>Monitors</p>
+      </div>
+
+
+      <div class="card">
+        <a href="{% url 'product_list' category='Graphics_Cards' %}" class="card-link">
+          <div class="cardImg">
+            <img src="{% static 'images/geforce-rtx-40-series-new.jpeg' %}" alt="">
+          </div>
+        </a>
+        <p>Graphic Cards</p>
+
+      </div>
+
+
+      <div class="card">
+        <a href="{% url 'product_list' category='Processors' %}" class="card-link">
+          <div class="cardImg">
+            <img src="{% static 'images/5.webp' %}" alt="">
+          </div>
+        </a>
+        <p>Processors</p>
+
+      </div>
+
+
+      <div class="card">
+        <a href="{% url 'product_list' category='Cases' %}" class="card-link">
+          <div class="cardImg">
+            <img src="{% static 'images/4.webp' %}" alt="">
+          </div>
+        </a>
+        <p>Cases</p>
+      </div>
+
+      <div class="card">
+        <a href="{% url 'product_list' category='Motherboards' %}" class="card-link">
+          <div class="cardImg">
+            <img src="{% static 'images/mb.jpg' %}" alt="">
+          </div>
+        </a>
+        <p>Motherboards</p>
+      </div>
+
+
+    </div>
+
+
+  </div>
+</div>
+{% endblock %}

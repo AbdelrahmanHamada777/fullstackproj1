@@ -1,33 +1,15 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Checkout - PC Planet</title>
-    <link rel="stylesheet" href="{% static 'style1.css' %}">
-</head>
-<body>
 
-<!-- Header -->
-<div class="headerContainer">
-    <div class="header">
-        <div class="logo">
-            <img src="{% static 'images/logo.png' %}" alt="PC Planet Logo" id="image_logo">
-        </div>
-        <ul class="headerLinks">
-            <li><a href="/">Home</a></li>
-            <li><a href="/shop/">Shop</a></li>
-            <li><a href="/cart/">Cart</a></li>
-            <li><a href="/checkout/">Checkout</a></li>
-        </ul>
-    </div>
-</div>
+{% block title %}Checkout - PC Planet{% endblock %}
 
-<div id="container" style="margin-top:120px; width: 90%; max-width: 1200px;">
+{% block content %}
+<div id="container" style="margin-top:120px; width: 95%; max-width: 1600px;">
     <h2>Checkout</h2>
 
     {% if cart_items %}
-    <table border="1" width="100%" cellpadding="10" style="border-collapse: collapse; background: #EEEEEE; border-radius: 15px;">
+    <table border="1" width="100%" cellpadding="10"
+        style="border-collapse: collapse; background: #EEEEEE; border-radius: 15px;">
         <tr style="background: #1656a4; color: #fff;">
             <th>Product</th>
             <th>Price</th>
@@ -40,30 +22,48 @@
             <td>{{ item.product.name }}</td>
             <td>${{ item.product.price }}</td>
             <td>{{ item.quantity }}</td>
-            <td>${{ item.product.price|floatformat:2 }}</td>
+            <td>${{ item.subtotal|floatformat:2 }}</td>
         </tr>
         {% endfor %}
     </table>
 
     <h2 style="text-align:right; margin-top:20px; color: #1656a4;">
-        Total: ${{ total_price }}
+        Total: ${{ cart_total }}
     </h2>
 
-    <div style="text-align:center; margin-top:30px;">
-        <button disabled class="btn">Place Order (Coming Soon)</button>
+    <div
+        style="margin-top:30px; background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <h3 style="color: #1656a4; margin-bottom: 20px;">Shipping Details</h3>
+        <form method="POST" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <label for="address" style="display: block; margin-bottom: 5px; font-weight: bold;">Address:</label>
+                <textarea name="address" id="address" rows="3" required
+                    style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 1.1em;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="phone" style="display: block; margin-bottom: 5px; font-weight: bold;">Phone
+                    Number:</label>
+                <input type="tel" name="phone" id="phone" required
+                    style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 1.1em;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="zip_code" style="display: block; margin-bottom: 5px; font-weight: bold;">Zip
+                    Code:</label>
+                <input type="text" name="zip_code" id="zip_code" required
+                    style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 1.1em;">
+            </div>
+
+            <div style="text-align:center;">
+                <button type="submit" class="btn" style="padding: 15px 30px; font-size: 1.2em;">Place Order</button>
+            </div>
+        </form>
     </div>
 
     {% else %}
     <p style="text-align:center;">Your cart is empty.</p>
     {% endif %}
 </div>
-
-<!-- Footer -->
-<div class="footerContainer">
-    <div class="footer">
-        &copy; 2025 PC Planet. All Rights Reserved.
-    </div>
-</div>
-
-</body>
-</html>
+{% endblock %}

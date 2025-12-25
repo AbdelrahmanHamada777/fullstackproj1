@@ -1,17 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.db import transaction
 
-from .models import Product, Purchase
+from .models import Product, Purchase, Order, OrderItem
 from .forms import SignUpForm
 
 
 # Home page
 def home_view(request):
-    return render(request, 'e_commerce/home.html')
+    # Get the cheapest product from each category for "Hot Sales"
+    categories = ['Monitors', 'Graphics_Cards', 'Processors', 'Cases']
+    hot_sales = []
+    
+    for category in categories:
+        cheapest = Product.objects.filter(category=category).order_by('price').first()
+        if cheapest:
+            hot_sales.append(cheapest)
+    
+    return render(request, 'e_commerce/home.html', {'hot_sales': hot_sales})
 
 
 # Product list by category
@@ -24,7 +34,7 @@ def product_list(request, category):
 
 
 # Sign up / Login view
-def signin_view(request):
+def signup_view(request):
      if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -39,7 +49,21 @@ def signin_view(request):
      else:
       form = SignUpForm()
 
-     return render(request, 'e_commerce/sign_in.html', {'form': form})
+     return render(request, 'e_commerce/signup.html', {'form': form})
+
+def custom_login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'e_commerce/login.html', {'form': form})
 
 
 # Cart page
@@ -88,21 +112,62 @@ def add_to_cart(request, product_id):
 @login_required
 def checkout_view(request):
     cart_items = Purchase.objects.filter(user=request.user)
-    cart_total = sum([item.product.price * item.quantity for item in cart_items])
+    
+    for item in cart_items:
+        item.subtotal = item.product.price * item.quantity
+        
+    cart_total = sum([item.subtotal for item in cart_items])
 
     if request.method == 'POST':
-        for item in cart_items:
-            if item.quantity > item.product.stock:
-                messages.error(request, f"Not enough stock for {item.product.name}. Available: {item.product.stock}")
-                return redirect('cart')
+        address = request.POST.get('address')
+        phone = request.POST.get('phone')
+        zip_code = request.POST.get('zip_code')
 
-        for item in cart_items:
-            item.product.stock -= item.quantity
-            item.product.save()
+        if not address or not phone or not zip_code:
+            messages.error(request, "Please fill in all shipping details.")
+            return redirect('checkout')
 
-        cart_items.delete()
-        messages.success(request, "Order placed successfully!")
-        return redirect('home')
+        try:
+            with transaction.atomic():
+                # Create the Order record
+                order = Order.objects.create(
+                    user=request.user,
+                    address=address,
+                    phone=phone,
+                    zip_code=zip_code,
+                    total_price=cart_total
+                )
+
+                # Re-fetch items with select_for_update to lock rows and get latest stock
+                for item in cart_items:
+                    # Lock the product row
+                    product = Product.objects.select_for_update().get(id=item.product.id)
+                    
+                    if item.quantity > product.stock:
+                        # This raises an exception that will trigger a rollback
+                        raise ValueError(f"Not enough stock for {product.name}. Available: {product.stock}")
+                    
+                    product.stock -= item.quantity
+                    product.save()
+
+                    # Create OrderItem record
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=item.quantity,
+                        price=product.price
+                    )
+
+                # Clear cart only if all updates succeed
+                cart_items.delete()
+                
+            messages.success(request, "Order placed successfully!")
+            return redirect('home')
+
+        except ValueError as e:
+            # Catch the specific error and notify user (transaction already rolled back)
+            messages.error(request, str(e))
+            return redirect('cart')
 
     return render(request, 'e_commerce/checkout.html', {
         'cart_items': cart_items,
@@ -119,11 +184,6 @@ def remove_from_cart(request, purchase_id):
     return redirect('cart')
 
 
-# Context processor to get cart count globally
-def cart_count(request):
-    if request.user.is_authenticated:
-        return {'cart_count': Purchase.objects.filter(user=request.user).count()}
-    return {'cart_count': 0}
 
 def contact_view(request):
     if request.method == 'POST':
@@ -146,6 +206,12 @@ def shop_view(request):
 def signin_redirect(request):
     if request.user.is_authenticated:
         logout(request)
-    return render(request, 'e_commerce/sign_in.html')
+    return redirect('login')
+
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at').prefetch_related('items__product')
+    return render(request, 'e_commerce/order_history.html', {'orders': orders})
 
 

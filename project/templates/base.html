@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'style1.css' %}?v=3" />
+    <title>{% block title %}PC Planet{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <div class="headerContainer">
+        <div class="header">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="logo" id="image_logo" />
+            </a>
+            <div class="headerLinks">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'shop' %}">Our Shop</a>
+
+                <a href="{% url 'contact' %}">Contact Us</a>
+                <a href="{% url 'cart' %}" style="font-weight: bold; white-space: nowrap;">Cart (<span
+                        id="cart-count">{{ cart_count }}</span>)</a>
+                <a href="{% url 'order_history' %}" style="font-weight: bold;">My Orders</a>
+                {% if user.is_authenticated %}
+                <div class="userBox">
+                    <p id="welcome">Hi, {{ user.username }}</p>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="sign_in">Login</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div
+            class="message {% if message.tags == 'success' %}message-success{% elif message.tags == 'error' %}message-error{% else %}message-info{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+
+    <div class="footerContainer">
+        <div class="footer">
+            copyright &copy; 2048 LUGX Gaming Company. All rights reserved. Design:
+            TemplateMo
+        </div>
+    </div>
+
+    <div class="chatbot">
+        <img src="{% static 'images/chatboti.jpg' %}" alt="chatbot" />
+    </div>
+
+    <!-- Chatbot Sidebar -->
+    <div id="chatbotSidebar" class="chatbot-sidebar">
+        <div class="chatbot-header">
+            <h3>PC Planet Assistant 🤖</h3>
+            <span id="closeChatbot">&times;</span>
+        </div>
+
+        <div class="chatbot-body" id="chatMessages">
+            <p>Hello 👋 How can I help you today?</p>
+        </div>
+
+        <div class="chatbot-footer">
+            <input type="text" id="chatInput" placeholder="Type your message..." />
+            <button id="sendMessage">Send</button>
+        </div>
+    </div>
+
+    <script src="{% static 'index.js' %}?v=2"></script>
+    <script src="{% static 'main.js' %}?v=2"></script>
+    <script>
+        // Get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Chatbot AJAX functionality
+        const sendBtn = document.getElementById('sendMessage');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        sendBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Display user message
+            const userMsg = document.createElement('p');
+            userMsg.style.textAlign = 'right';
+            userMsg.style.background = '#0171F9';
+            userMsg.style.padding = '8px';
+            userMsg.style.borderRadius = '8px';
+            userMsg.style.marginBottom = '10px';
+            userMsg.textContent = message;
+            chatMessages.appendChild(userMsg);
+            chatInput.value = '';
+
+            // Send to backend
+            const csrftoken = getCookie('csrftoken');
+            fetch('/bot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken
+                },
+                body: `message=${encodeURIComponent(message)}`
+            })
+                .then(res => {
+                    console.log('Response status:', res.status);
+                    if (!res.ok) {
+                        throw new Error('Not authenticated or server error');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    const botMsg = document.createElement('p');
+                    botMsg.style.background = '#333';
+                    botMsg.style.padding = '8px';
+                    botMsg.style.borderRadius = '8px';
+                    botMsg.style.marginBottom = '10px';
+                    botMsg.textContent = data.response;
+                    chatMessages.appendChild(botMsg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(err => {
+                    console.error('Chatbot error:', err);
+                    const errorMsg = document.createElement('p');
+                    errorMsg.style.color = 'red';
+                    errorMsg.textContent = 'Error: Please login to use the chatbot.';
+                    chatMessages.appendChild(errorMsg);
+                });
+        }
+    </script>
+    <script src="{% static 'sign_in.js' %}"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Planet - AI Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'style1.css' %}" />
+    <link rel="stylesheet" href="{% static 'monitors.css' %}" />
+    <style>
+        .chat-container {
+            max-width: 800px;
+            margin: 150px auto 50px;
+            padding: 20px;
+            background: #1f2125f7;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            color: white;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            max-height: 600px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: #ee626b;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background-color: #333;
+            color: #ccc;
+            align-self: flex-start;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 15px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            background: #333;
+            color: white;
+        }
+
+        .chat-input-area button {
+            background-color: #ee626b;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .chat-input-area button:hover {
+            background-color: #d1454e;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="headerContainer">
+        <div class="header">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="logo" />
+            </a>
+            <div class="headerLinks">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'shop' %}">Our Shop</a>
+                <a href="{% url 'contact' %}">Contact Us</a>
+                <a href="{% url 'cart' %}" style="font-weight: bold;">Cart (<span id="cart-count">{{ cart_count
+                        }}</span>)</a>
+                <a href="{% url 'bot' %}" class="active">AI Assistant</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Content -->
+    <div class="chat-container">
+        <div class="chat-history" id="chatHistory">
+            {% for chat in chats %}
+            <div class="message user-message">
+                <strong>You:</strong> {{ chat.message }}
+            </div>
+            <div class="message bot-message">
+                <strong>AI:</strong> {{ chat.response|linebreaksbr }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userMessage" placeholder="Ask about PC builds, components..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footerContainer">
+        <div class="footer">
+            copyright &copy; 2048 LUGX Gaming Company. All rights reserved.
+        </div>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userMessage');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const history = document.getElementById('chatHistory');
+
+            // Append user message immediately
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            history.appendChild(userDiv);
+            input.value = '';
+            history.scrollTop = history.scrollHeight;
+
+            const csrftoken = getCookie('csrftoken');
+
+            try {
+                const formData = new FormData();
+                formData.append('message', message);
+
+                const response = await fetch("{% url 'bot' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                // Append bot response
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.innerHTML = `<strong>AI:</strong> ${data.response.replace(/\n/g, '<br>')}`;
+                history.appendChild(botDiv);
+                history.scrollTop = history.scrollHeight;
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again.');
+            }
+        }
+
+        // Allow Enter key to send
+        document.getElementById('userMessage').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

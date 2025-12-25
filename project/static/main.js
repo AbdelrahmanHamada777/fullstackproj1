@@ -1,10 +1,11 @@
-
+/*
+// Legacy client-side cart logic - Disabled to prevent conflict with Django backend
 const addToCartButtons = document.querySelectorAll('.productBtn');
 const cartCountElement = document.getElementById('cart-count');
 
 
 let cart = JSON.parse(localStorage.getItem('CART')) || [];
-updateCartCount(); 
+// updateCartCount(); 
 
 
 addToCartButtons.forEach(btn => {
@@ -14,12 +15,12 @@ addToCartButtons.forEach(btn => {
 
 function addToCart(event) {
     const btn = event.target;
-  
+
     const productCard = btn.parentElement;
-    
-    
+
+
     const productName = productCard.querySelector('.productName').innerText;
-    
+
 const productPrice = productCard
   .querySelector('.productPrice')
   .innerText
@@ -34,7 +35,7 @@ const productPrice = productCard
         quantity: 1
     };
 
-  
+
     const existingProductIndex = cart.findIndex(item => item.name === product.name);
 
     if (existingProductIndex > -1) {
@@ -43,7 +44,7 @@ const productPrice = productCard
         cart.push(product);
     }
 
-  
+
     localStorage.setItem('CART', JSON.stringify(cart));
     updateCartCount();
     alert(`${productName} added to cart!`);
@@ -58,7 +59,7 @@ function updateCartCount() {
 }
 
 
- 
+
 const cartTableBody = document.getElementById('cart-table-body');
 const cartTotalElement = document.getElementById('cart-total');
 const cartSubtotalElement = document.getElementById('cart-subtotal');
@@ -76,7 +77,7 @@ function displayCart() {
         if(emptyMsg) emptyMsg.style.display = 'block';
     } else {
         if(emptyMsg) emptyMsg.style.display = 'none';
-        
+
         cart.forEach((item, index) => {
             const itemTotal = item.price * item.quantity;
             total += itemTotal;
@@ -91,7 +92,7 @@ function displayCart() {
                 </td>
                 <td>$${item.price}</td>
                 <td>
-                    <input type="number" value="${item.quantity}" min="1" 
+                    <input type="number" value="${item.quantity}" min="1"
                            style="width:50px; text-align:center;"
                            onchange="updateQuantity(${index}, this.value)">
                 </td>
@@ -122,3 +123,4 @@ function removeItem(index) {
     displayCart();
     updateCartCount();
 }
+*/

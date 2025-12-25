@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - PC Planet{% endblock %}
+
+{% block content %}
+<!-- Sign Up Form -->
+<div id="container">
+    <h2>Create Your Account</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <input type="text" name="username" placeholder="Username" value="{{ form.username.value|default:'' }}" required>
+        {{ form.username.errors }}
+        <br>
+        <input type="email" name="email" placeholder="Email" value="{{ form.email.value|default:'' }}" required>
+        {{ form.email.errors }}
+        <br>
+
+        <input type="password" name="password1" placeholder="Password">
+        {{ form.password1.errors }}
+        <br>
+
+        <input type="password" name="password2" placeholder="Confirm Password">
+        {{ form.password2.errors }}
+        <br>
+
+        <button type="submit" class="btn">Sign Up</button>
+    </form>
+
+    <p style="margin-top: 20px; text-align: center;">
+        Already have an account? <a href="{% url 'login' %}" style="color: #1656a4; font-weight: bold;">Login</a>
+    </p>
+</div>
+{% endblock %}
